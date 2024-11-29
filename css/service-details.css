@@ -1,0 +1,92 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background-color: #f9f9f9; /* Light background for a clean look */
+    color: #333; /* Dark text for readability */
+}
+
+header {
+    background-color: #ffffff; /* White header */
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+header h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+nav {
+    margin-top: 10px;
+}
+
+nav a {
+    margin: 0 15px;
+    text-decoration: none;
+    color: #007734; /* Green color for links */
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+nav a:hover {
+    color: #005a2e; /* Darker green on hover */
+}
+
+.service-details-container {
+    max-width: 600px; /* Limit width for better readability */
+    margin: 40px auto; /* Center the container */
+    padding: 20px;
+    background-color: #ffffff; /* White background for details */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.service-details-container h2 {
+    font-size: 28px;
+    margin-bottom: 15px;
+}
+
+.service-details-container p {
+    margin-bottom: 10px;
+    line-height: 1.6; /* Increase line height for readability */
+}
+
+.back-button {
+    display: block;
+    margin: 20px auto; /* Center the button */
+    padding: 10px 20px;
+    background-color: #007734; /* Green background */
+    color: white; /* White text */
+    border: none;
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.back-button:hover {
+    background-color: #005a2e; /* Darker green on hover */
+}
+
+.book-service-button {
+    display: block;
+    margin: 20px auto; /* Center the button */
+    padding: 10px 20px;
+    background-color: #007734; /* Green background */
+    color: white; /* White text */
+    border: none;
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.book-service-button:hover {
+    background-color: #005a2e; /* Darker green on hover */
+}

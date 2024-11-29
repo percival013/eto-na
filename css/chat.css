@@ -1,0 +1,91 @@
+/* chat.css */
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  header {
+    background-color: #232f3e;
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  header h1 {
+    margin: 0;
+    font-size: 24px;
+  }
+  
+  nav {
+    display: flex;
+    gap: 20px;
+  }
+  
+  nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  nav a:hover {
+    text-decoration: underline;
+  }
+  
+  main {
+    padding: 20px;
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+
+  main {
+    display: flex; /* Use flexbox for the main container */
+    width: 100%;
+    padding: 20px;
+    height: calc(100vh - 60px); /* Adjust height to accommodate header and footer */
+  }
+  
+  .user-list-container {
+    /* ... your existing CSS for the user list container ... */
+    flex: 0 0 30%; /* Set width to 30% */
+    margin-right: 20px; /* Space between user list and chat area */
+    height: 100%; /* User list container takes full height */
+  }
+  
+  .chat-window {
+    /* ... your existing CSS for the chat window ... */
+    flex: 1; /* Chat window takes remaining space */
+    height: 100%; /* Chat window takes full height */
+  }
+  
+  
+  #user-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  #user-list li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  #user-list li:hover {
+    background-color: #f2f2f2;
+  }
+
+
