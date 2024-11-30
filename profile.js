@@ -204,35 +204,35 @@ document.getElementById('provider-application-form').addEventListener('submit', 
 
     const gender = document.getElementById('gender').value;
     const phone = document.getElementById('phone').value;
-    const proofOfWork = document.getElementById('proofOfWork').value;
+    const proofOfWorkFiles = document.getElementById('proofOfWork').files; // Get the uploaded files
     const credentials = document.getElementById('credentials').value;
 
-    const applicationData = {
-      gender,
-      phone,
-      proofOfWork,
-      credentials
-    };
+    const applicationData = new FormData(); // Create a FormData object
+    applicationData.append('gender', gender);
+    applicationData.append('phone', phone);
+    applicationData.append('credentials', credentials);
+
+    // Append each file to FormData
+    for (let i = 0; i < proofOfWorkFiles.length; i++) {
+        applicationData.append('proofOfWork', proofOfWorkFiles[i]);
+    }
 
     try {
-      const response = await fetch('/api/apply-service-provider', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(applicationData),
-        credentials: 'include' 
-      });
+        const response = await fetch('/api/apply-service-provider', {
+            method: 'POST',
+            body: applicationData,
+            credentials: 'include' 
+        });
 
-      const result = await response.json();
-      document.getElementById('application-message').textContent = result.message;
+        const result = await response.json();
+        document.getElementById('application-message').textContent = result.message;
 
-      if (response.ok) {
-        document.getElementById('provider-application-form').reset(); 
-      }
+        if (response.ok) {
+            document.getElementById('provider-application-form').reset(); 
+        }
     } catch (error) {
-      console.error('Error submitting application:', error);
-      document.getElementById('application-message ').textContent = 'An error occurred while submitting your application. Please try again later.';
+        console.error('Error submitting application:', error);
+        document.getElementById('application-message').textContent = 'An error occurred while submitting your application. Please try again later.';
     }
 });
 

@@ -26,38 +26,41 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
-        const response = await fetch('/api/get-pending-applications', {
+      const response = await fetch('/api/get-pending-applications', {
           credentials: 'include'
-        });
-    
-        if (response.ok) {
+      });
+
+      if (response.ok) {
           const applications = await response.json();
           const tbody = document.querySelector('#applicationsTable tbody');
-    
+
           applications.forEach(application => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-              <td>${application._id}</td>
-              <td>${application.userId}</td>
-              <td>${application.gender}</td>
-              <td>${application.phone}</td>
-              <td>${application.proofOfWork}</td>
-              <td>
-                <button class="approve-button" data-id="${application._id}">Approve</button>
-                <button class="remove-button" data-id="${application._id}">Remove</button>
-              </td>
-            `;
-            tbody.appendChild(row);
+              const row = document.createElement('tr');
+              row.innerHTML = `
+                  <td>${application._id}</td>
+                  <td>${application.userId.username}</td>
+                  <td>${application.gender}</td>
+                  <td>${application.phone}</td>
+                  <td>
+                      ${application.proofOfWork.map(file => `<a href="${file}" target="_blank">View</a>`).join(', ')}
+                  </td>
+                  <td>
+                      <button class="approve-btn" data-id="${application._id}">Approve</button>
+                      <button class="remove-btn" data-id="${application._id}">Reject</button>
+                  </td>
+              `;
+              tbody.appendChild(row);
           });
     
-          document.querySelectorAll('.approve-button').forEach(button => {
+          document.querySelectorAll('.approve-btn').forEach(button => {
             button.addEventListener('click', async () => {
                 const applicationId = button.getAttribute('data-id');
                 await approveApplication(applicationId);
             });
           });
+
           
-          document.querySelectorAll('.remove-button').forEach(button => {
+          document.querySelectorAll('.remove-btn').forEach(button => {
             button.addEventListener('click', async () => {
                 const applicationId = button.getAttribute('data-id');
                 const userId = button.getAttribute('data-userid');
@@ -114,10 +117,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${application._id}</td>
-                    <td>${application.userId}</td>
+                    <td>${application.userId.username}</td>
                     <td>${application.gender}</td>
                     <td>${application.phone}</td>
-                    <td>${application.proofOfWork}</td>
+                    ${application.proofOfWork.map(file => `<a href="${file}" target="_blank">View</a>`).join(', ')}
                     <td>
                         <button class="remove-button" data-id="${application._id}" data-userid="${application.userId}">Remove</button>
                     </td>

@@ -10,6 +10,7 @@ const cookieParser = require('cookie-parser')
 const cors = require('cors');
 const router = express.Router()
 const Message = require('./models/Message')
+const multer = require('multer')
 
 process.on('exit', function(code) {
     console.log(`About to exit with code: ${code}`);
@@ -25,6 +26,7 @@ app.use(cookieParser())
 app.use(express.static(__dirname))
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
+app.use('/uploads', express.static('uploads'))
 app.use(session({
     secret: 'BKjonpCFvhw1QnPe',
     resave: false,
@@ -41,10 +43,7 @@ app.use(session({
     })
 }))
 
-mongoose.connect(mongoUrl, {
-    useUnifiedTopology: true,
-    useNewUrlParser: true
-})
+mongoose.connect(mongoUrl)
 const db = mongoose.connection
 db.once('open',()=>{
     console.log("MongoDb Connection established!")
@@ -70,14 +69,25 @@ const UserSchema = new mongoose.Schema({
 const Users = mongoose.model("users", UserSchema)
 
 const ApplicationSchema = new mongoose.Schema({
-    userId: { type: mongoose.Schema.Types.ObjectId, required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref:'users', required: true },
     gender: { type: String, required: true },
     phone: { type: String, required: true },
-    proofOfWork: { type: String, required: true },
-    credentials: { type: String },
+    proofOfWork: { type: [String], required: true },
+    credentials: { type: String, required: false },
     status: { type: String, default: 'pending' }
 });
 const Application = mongoose.model("Application", ApplicationSchema);
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname)); // Append timestamp to filename
+    }
+});
+
+const upload = multer({ storage });
 
 const AdvertisementRequestSchema = new mongoose.Schema({
     serviceName: { type: String, required: true },
@@ -140,16 +150,34 @@ const BookingSchema = new mongoose.Schema({
 const Booking = mongoose.model('Booking', BookingSchema);
 module.exports = Booking;
 
+function isAuthenticated(req, res, next) {
+    if (req.session.userId) {
+        // Fetch the user from the database and attach it to the request object
+        Users.findById(req.session.userId)
+            .then(user => {
+                if (!user) {
+                    return res.status(401).json({ message: 'User  not found' });
+                }
+                req.user = user; // Set the user object on the request
+                next(); // Proceed to the next middleware
+            })
+            .catch(err => {
+                console.error('Error fetching user:', err);
+                return res.status(500).json({ message: 'Internal server error' });
+            });
+    } else {
+        return res.status(401).json({ message: 'User  not authenticated.' });
+    }
+}
+
 app.get('/',(req,res)=>{
     res.sendFile(path.join(__dirname,'index.html'))
 })
 
 app.post('/applications', async (req, res) => {
     const { address, gender, phone, proofOfWork } = req.body;
-
     
     const userId = req.session.userId;
-
     
     if (!userId || !address || !gender || !phone || !proofOfWork) {
         return res.status(400).send({ error: 'All fields are required' });
@@ -179,11 +207,7 @@ app.post('/login', async (req, res) => {
     // Directly compare the plaintext password with the stored password
     if (user && password === user.password) { // Compare without bcrypt
         req.session.userId = user._id; // Store user ID in session
-        req.session.role = user.role; // Store user role if needed
-        
-        user.sessions.push({sessionId: req.session.id})
-        await user.save()
-        
+        req.session.role = user.role; // Store user role if needed        
         res.redirect('dashboard.html'); // Redirect to the user's dashboard
     } else {
         res.redirect('login.html'); // Redirect back to login on failure
@@ -375,31 +399,40 @@ app.post('/api/switch-to-customer', async (req, res) => {
     }
 });
 
-app.post('/api/apply-service-provider', async (req, res) => {
-    const { gender, phone, proofOfWork } = req.body;
+app.post('/api/apply-service-provider', isAuthenticated, upload.array('proofOfWork'), async (req, res) => {
+    const { gender, phone, credentials } = req.body;
 
-    
+    // Access uploaded files
+    const proofOfWorkFiles = req.files;
+
+    // Check if files were uploaded
+    if (!proofOfWorkFiles || proofOfWorkFiles.length === 0) {
+        return res.status(400).send({ message: 'No files uploaded.' });
+    }
+
+    // Extract the file paths from the uploaded files
+    const proofOfWorkPaths = proofOfWorkFiles.map(file => file.path);
     const userId = req.session.userId;
 
-    
-    if (!userId|| !gender || !phone || !proofOfWork) {
-        return res.status(400).send({ error: 'All fields are required' });
+    // Check if userId is available
+    if (!req.user || !req.user._id) {
+        return res.status(401).send({ message: 'User  not authenticated.' });
     }
 
     try {
-        const newApplication = new Application({ 
+        const newApplication = new Application({
             userId,
-
             gender,
             phone,
-            proofOfWork
+            credentials,
+            proofOfWork: proofOfWorkPaths
         });
+
         await newApplication.save();
-        console.log('Application saved:', newApplication); 
-        res.status(201).send(newApplication);
+        res.status(201).send({ message: 'Application submitted successfully!' });
     } catch (error) {
-        console.error('Error saving application:', error); 
-        res.status(500).send({ error: 'Internal Server Error' });
+        console.error('Error saving application:', error);
+        res.status(400).send({ message: 'Error saving application: ' + error.message });
     }
 });
 
@@ -493,39 +526,44 @@ app.get('/api/get-advertisement-requests', async (req, res) => {
     }
 });
 
-app.get('/api/get-pending-applications', async (req, res) => {
-    try {
-      const applications = await Application.find({ status: 'pending' });
-      res.json(applications);
-    } catch (error) {
-      console.error('Error fetching applications:', error);
-      res.status(500).json({ message: 'Internal Server Error' });
-    }
+app.get('/api/get-pending-applications', async (req, res) => { 
+    try { 
+        const applications = await Application.find({ status: 'pending' }) 
+            .populate('userId', 'username') // This should populate the username
+            .exec(); 
+        res.json(applications); 
+    } catch (error) { 
+        console.error('Error fetching applications:', error); 
+        res.status(500).json({ message: 'Internal Server Error' }); 
+    } 
 });
 
-app.get('/api/get-approved-applications', async (req, res) => {
-    try {
-        const approvedApplications = await Application.find({ status: 'approved' }); 
-        res.json(approvedApplications);
-    } catch (error) {
-        console.error('Error fetching approved applications:', error);
-        res.status(500).send('Failed to fetch approved applications.');
-    }
+app.get('/api/get-approved-applications', async (req, res) => { 
+    try { 
+        const approvedApplications = await Application.find({ status: 'approved' }) 
+            .populate('userId', 'username') // Populate the username here
+            .exec(); 
+        res.json(approvedApplications); 
+    } catch (error) { 
+        console.error('Error fetching approved applications:', error); 
+        res.status(500).send('Failed to fetch approved applications.'); 
+    } 
 });
 
 app.delete('/api/remove-application/:id', async (req, res) => {
     const applicationId = req.params.id;
 
     try {
+        // Find the application by ID
         const application = await Application.findById(applicationId);
         if (!application) {
             return res.status(404).json({ message: 'Application not found.' });
         }
 
-        
+        // Remove the application
         await Application.deleteOne({ _id: applicationId });
 
-        
+        // Optionally, update the user role or status
         await Users.findByIdAndUpdate(application.userId, { isApproved: false, role: 'regular' }, { new: true });
 
         res.status(200).json({ message: 'Application removed successfully! User role updated to regular.' });

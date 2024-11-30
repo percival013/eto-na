@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Account - FixerFinder</title>
   <link rel="stylesheet" href="/css/profile.css">
-  <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
   <header>
@@ -37,8 +36,8 @@
           <label for="phone">Phone Number:</label>
           <input type="tel" id="phone" required>
           
-          <label for="proofOfWork">Proof of Work:</label>
-          <input type="text" id="proofOfWork" required>
+          <label for="proofOfWork">Proof of Work (Image/Video):</label>
+          <input type="file" id="proofOfWork" accept="image/*,video/*" required multiple>
           
           <label for="credentials">Credentials (optional):</label>
           <input type="text" id="credentials">
