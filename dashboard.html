@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - FixerFinder</title>
   <link rel="stylesheet" href="/css/dashboard.css">
-  <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
   <header>
@@ -23,6 +22,7 @@
     <aside class="service-category">
       <h2>Service Categories</h2>
       <ul>
+          <li onclick="filterServices('All')">All Services</li>
         <h3>Maintenance</h3>
           <li onclick="filterServices('Plumbing')">Plumbing</li>
           <li onclick="filterServices('Electrical')">Electrical</li>
@@ -62,7 +62,8 @@
         <input type="text" id="search-bar" placeholder="Search for services..." onkeyup="searchServices()">
       </div>
 
-      <div class="product-list" id="product-list"></div>
+      <div class="product-list" id="product-list">
+      </div>
       
     </main>
   </div>

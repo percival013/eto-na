@@ -204,7 +204,7 @@ document.getElementById('provider-application-form').addEventListener('submit', 
 
     const gender = document.getElementById('gender').value;
     const phone = document.getElementById('phone').value;
-    const proofOfWork = document.getElementById('proofOfWork').value; // This should be text now
+    const proofOfWork = document.getElementById('proofOfWork').value; 
     const credentials = document.getElementById('credentials').value;
 
     const applicationData = {
@@ -285,7 +285,6 @@ function displayUploadedServices(services) {
 
     document.getElementById('uploaded-services').style.display = 'block'; 
 }
-
 
 async function fetchBookingRequests() {
     try {
@@ -458,7 +457,7 @@ async function removeBooking(bookingId) {
 }
 
 document.getElementById('update-account-form').addEventListener('submit', async function(event) {
-    event.preventDefault(); // Prevent the default form submission
+    event.preventDefault(); 
 
     const username = document.getElementById('username').value;
     const email = document.getElementById('email').value;
@@ -466,12 +465,23 @@ document.getElementById('update-account-form').addEventListener('submit', async 
     const city = document.getElementById('city').value;
     const province = document.getElementById('province').value;
 
+    const currentPassword = document.getElementById('current-password').value;
+    const newPassword = document.getElementById('new-password').value
+    const confirmPassword = document.getElementById('confirm-password').value
+
+    if (newPassword !== confirmPassword) {
+        document.getElementById('update-message').textContent = "New password do not match.";
+        return;
+    }
+
     const updatedDetails = {
         username,
         email,
         address,
         city,
-        province
+        province,
+        currentPassword,
+        newPassword
     };
 
     try {
@@ -481,15 +491,15 @@ document.getElementById('update-account-form').addEventListener('submit', async 
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(updatedDetails),
-            credentials: 'include' // Include cookies for session management
+            credentials: 'include' 
         });
 
         const result = await response.json();
         document.getElementById('update-message').textContent = result.message;
 
         if (response.ok) {
-            // Optionally, you can reload user info or redirect
-            await fetchUserInfo(); // Fetch updated user info
+            
+            await fetchUserInfo(); 
         }
     } catch (error) {
         console.error('Error updating account details:', error);
@@ -572,7 +582,7 @@ function initAutocomplete() {
             return;
         }
 
-        // Optionally, populate city and province fields from place.address_components
+        
         populateCityAndProvince(place.address_components);
     });
 }
@@ -588,7 +598,7 @@ function populateCityAndProvince(addressComponents) {
         }
     });
 
-    // Update the city and province input fields
+    
     document.getElementById('city').value = city;
     document.getElementById('province').value = province;
 }

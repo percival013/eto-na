@@ -29,6 +29,7 @@ function displayServiceDetails(service) {
     const serviceDetailsContainer = document.getElementById('service-details');
     serviceDetailsContainer.innerHTML = `
         <h2>${service.serviceName}</h2>
+        <p><strong>Category:</strong> ${service.serviceCategory}</p> 
         <p><strong>Description:</strong> ${service.serviceDescription}</p>
         <p><strong>Average Price:</strong> $${service.averagePrice}</p>
         <p><strong>Provider: </strong> ${service.providerId ? service.providerId.username : 'Unknown'}</p>

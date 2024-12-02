@@ -31,9 +31,9 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         path: '/',
-        secure: false, // Set to true if using HTTPS
-        httpOnly: true, // Helps mitigate XSS
-        maxAge: 180 * 60 * 1000 // Session expiration time (3 hours)
+        secure: false, 
+        httpOnly: true, 
+        maxAge: 180 * 60 * 1000 
     },
     store: new MongoStore({
         mongoUrl: mongoUrl,
@@ -55,11 +55,11 @@ const UserSchema = new mongoose.Schema({
     isApproved: { type: Boolean, required: true },
     createdAt: { type: Date, default: Date.now },
     address: { type: String, required: true },
-    city: { type: String, required: true }, // Add city field
-    province: { type: String, required: true }, // Add province field
+    city: { type: String, required: true }, 
+    province: { type: String, required: true }, 
     latitude: { type: Number, required: true },
     longitude: { type: Number, required: true },
-    sessions: [{ // New field to store session information
+    sessions: [{ 
         sessionId: { type: String, required: true },
         createdAt: { type: Date, default: Date.now }
     }]
@@ -82,8 +82,8 @@ const AdvertisementRequestSchema = new mongoose.Schema({
     serviceDescription: { type: String, required: true },
     averagePrice: { type: Number, required: true },
     address: { type: String, required: true },
-    city: { type: String, required: true }, // Add city field
-    province: { type: String, required: true }, // Add province field
+    city: { type: String, required: true }, 
+    province: { type: String, required: true }, 
     latitude: { type: Number, required: true },
     longitude: { type: Number, required: true },
     providerId: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
@@ -139,14 +139,14 @@ const Booking = mongoose.model('Booking', BookingSchema);
 
 function isAuthenticated(req, res, next) {
     if (req.session.userId) {
-        // Fetch the user from the database and attach it to the request object
+        
         Users.findById(req.session.userId)
             .then(user => {
                 if (!user) {
                     return res.status(401).json({ message: 'User  not found' });
                 }
-                req.user = user; // Set the user object on the request
-                next(); // Proceed to the next middleware
+                req.user = user; 
+                next(); 
             })
             .catch(err => {
                 console.error('Error fetching user:', err);
@@ -188,38 +188,38 @@ app.post('/applications', async (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
-    const { email, password } = req.body; // Get email and password from the request body
-    const user = await Users.findOne({ email }); // Find user by email
+    const { email, password } = req.body; 
+    const user = await Users.findOne({ email }); 
 
-    // Directly compare the plaintext password with the stored password
-    if (user && password === user.password) { // Compare without bcrypt
-        req.session.userId = user._id; // Store user ID in session
-        req.session.role = user.role; // Store user role if needed        
-        res.redirect('dashboard.html'); // Redirect to the user's dashboard
+    
+    if (user && password === user.password) { 
+        req.session.userId = user._id; 
+        req.session.role = user.role; 
+        res.redirect('dashboard.html'); 
     } else {
-        res.redirect('login.html'); // Redirect back to login on failure
+        res.redirect('login.html'); 
     }
 });
 
 app.post('/post', async (req, res) => {
     const { username, email, password, address, city, province, latitude, longitude } = req.body;
 
-    // Log the received data for debugging
-    console.log("Received data:", req.body); // Add this line to see what data is being received
+    
+    console.log("Received data:", req.body); 
 
     if (!email || !username || !password || !address || !city || !province || !latitude || !longitude) {
         console.error('All fields are required');
         return res.status(400).redirect('/register.html');
     }
 
-    // Check if the user already exists
+    
     const existingUser  = await Users.findOne({ email });
     if (existingUser ) {
         console.log('User  with this email already exists.');
         return res.status(400).redirect('/register.html');
     }
 
-    // Create a new user
+    
     const user = new Users({
         username,
         email,
@@ -233,10 +233,10 @@ app.post('/post', async (req, res) => {
     });
 
     try {
-        // Save the new user to the database
+        
         await user.save();
-        console.log('User  saved:', user); // Log the saved user for confirmation
-        res.redirect('/index.html'); // Redirect to the login page
+        console.log('User  saved:', user); 
+        res.redirect('/index.html'); 
     } catch (error) {
         console.error('Error saving user:', error);
         res.status(500).redirect('/register.html');
@@ -315,7 +315,7 @@ app.get('/api/current-user', (req, res) => {
     }
 
     try {
-        const user = await Users.findById(req.session.userId); // Fetch user from the database
+        const user = await Users.findById(req.session.userId); 
         if (!user) {
             return res.json({ success: false });
         }
@@ -385,16 +385,16 @@ app.post('/api/switch-to-customer', async (req, res) => {
 });
 
 app.post('/api/apply-service-provider', isAuthenticated, async (req, res) => {
-    const { gender, phone, credentials, proofOfWork } = req.body; // proofOfWork is now text
+    const { gender, phone, credentials, proofOfWork } = req.body; 
 
     const userId = req.session.userId;
 
-    // Check if userId is available 
+    
     if (!req.user || !req.user._id) {
         return res.status(401).send({ message: 'User  not authenticated.' });
     }
 
-    // Validate input fields
+    
     if (!gender || !phone || !proofOfWork) {
         return res.status(400).send({ message: 'All fields are required.' });
     }
@@ -405,7 +405,7 @@ app.post('/api/apply-service-provider', isAuthenticated, async (req, res) => {
             gender,
             phone,
             credentials,
-            proofOfWork // This is now treated as text
+            proofOfWork 
         });
 
         await newApplication.save();
@@ -472,7 +472,7 @@ app.post('/api/advertise-service', async (req, res) => {
             return res.status(404).json({ message: 'User  not found' });
         }
 
-        // Create a new advertisement request instead of a service
+        
         const newAdvertisementRequest = new AdvertisementRequest({
             serviceName,
             serviceCategory,
@@ -525,7 +525,7 @@ app.get('/api/get-advertisement-requests', async (req, res) => {
 app.get('/api/get-pending-applications', async (req, res) => { 
     try { 
         const applications = await Application.find({ status: 'pending' }) 
-            .populate('userId', 'username') // This should populate the username
+            .populate('userId', 'username') 
             .exec(); 
         res.json(applications); 
     } catch (error) { 
@@ -537,7 +537,7 @@ app.get('/api/get-pending-applications', async (req, res) => {
 app.get('/api/get-approved-applications', async (req, res) => { 
     try { 
         const approvedApplications = await Application.find({ status: 'approved' }) 
-            .populate('userId', 'username') // Populate the username here
+            .populate('userId', 'username') 
             .exec(); 
         res.json(approvedApplications); 
     } catch (error) { 
@@ -550,16 +550,16 @@ app.delete('/api/remove-application/:id', async (req, res) => {
     const applicationId = req.params.id;
 
     try {
-        // Find the application by ID
+        
         const application = await Application.findById(applicationId);
         if (!application) {
             return res.status(404).json({ message: 'Application not found.' });
         }
 
-        // Remove the application
+        
         await Application.deleteOne({ _id: applicationId });
 
-        // Optionally, update the user role or status
+        
         await Users.findByIdAndUpdate(application.userId, { isApproved: false, role: 'regular' }, { new: true });
 
         res.status(200).json({ message: 'Application removed successfully! User role updated to regular.' });
@@ -570,24 +570,33 @@ app.delete('/api/remove-application/:id', async (req, res) => {
 });
 
 app.patch('/api/update-account', isAuthenticated, async (req, res) => {
-    const { username, email, address, city, province } = req.body;
+    const { username, email, address, city, province, currentPassword, newPassword } = req.body;
 
     if (!username || !email || !address || !city || !province) {
         return res.status(400).json({ message: 'All fields are required.' });
     }
 
     try {
-        const updatedUser  = await Users.findByIdAndUpdate(req.session.userId, {
-            username,
-            email,
-            address,
-            city,
-            province
-        }, { new: true }); // Return the updated document
-
-        if (!updatedUser ) {
+        const user = await Users.findById(req.session.userId);
+        if (!user) {
             return res.status(404).json({ message: 'User  not found.' });
         }
+
+        if (currentPassword !== user.password) {
+            return res.status(400).json({ message: 'Current password is incorrect.' });
+        }
+
+        user.username = username;
+        user.email = email;
+        user.address = address;
+        user.city = city;
+        user.province = province;
+
+        if (newPassword) {
+            user.password = newPassword; 
+        }
+
+        await user.save();
 
         res.status(200).json({ message: 'Account details updated successfully!' });
     } catch (error) {
@@ -701,21 +710,32 @@ app.patch('/api/remove-access/:userId', async (req, res) => {
 });
 
 app.get('/api/get-services', async (req, res) => {
-    const providerId = req.query.providerId; 
+    const providerId = req.query.providerId;
 
     try {
         if (providerId) {
             
             const services = await Service.find({ providerId: providerId })
-                .populate('providerId', 'username') 
-                .exec()
+                .populate('providerId', 'username')
+                .exec();
 
-            res.json(services);
-        } else {
             
+            const bookings = await Booking.find({ providerId: providerId })
+                .populate('userId', 'username') 
+                .exec();
+
+            
+            const servicesWithBookings = services.map(service => {
+                
+                service.bookings = bookings.filter(booking => booking.serviceId.equals(service._id)) || [];
+                return service;
+            });
+
+            res.json(servicesWithBookings);
+        } else {
             const services = await Service.find()
                 .populate('providerId', 'username')
-                .exec()
+                .exec();
 
             res.json(services);
         }
@@ -1024,7 +1044,7 @@ app.post('/logout', async (req, res) => {
         const user = await Users.findById(userId);
         if (user) {
             user.sessions = user.sessions.filter(session => session.sessionId !== req.session.id);
-            await user.save(); // Save the user with the updated sessions
+            await user.save(); 
         }
         req.session.destroy(err => {
             if (err) {
@@ -1032,7 +1052,7 @@ app.post('/logout', async (req, res) => {
                 return res.status(500).json({ message: 'Internal Server Error' });
             }
 
-            res.clearCookie('connect.sid'); // Clear the session cookie
+            res.clearCookie('connect.sid'); 
             res.status(200).json({ message: 'Successfully logged out' });
         });
     } else {

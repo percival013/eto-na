@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    initAutocomplete(); // Call this when the document is ready
+    initAutocomplete(); 
 });
 const inputs = document.querySelectorAll('.input');
 
@@ -32,14 +32,14 @@ function initAutocomplete() {
         return;
       }
   
-      // Get latitude and longitude from the place object
+      
       const latitude = place.geometry.location.lat();
       const longitude = place.geometry.location.lng();
 
       document.getElementById('latitude').value = latitude
       document.getElementById('longitude').value = longitude
   
-      // Optionally, populate city and province fields from place.address_components
+      
       populateCityAndProvince(place.address_components);
     });
   }
@@ -55,7 +55,7 @@ function initAutocomplete() {
       }
     });
   
-    // Update the city and province input fields
+    
     document.getElementById('city').value = city;
     document.getElementById('province').value = province;
   }
