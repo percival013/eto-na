@@ -41,9 +41,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                   <td>${application.userId.username}</td>
                   <td>${application.gender}</td>
                   <td>${application.phone}</td>
-                  <td>
-                      ${application.proofOfWork.map(file => `<a href="${file}" target="_blank">View</a>`).join(', ')}
-                  </td>
+                  <td>${application.proofOfWork}
                   <td>
                       <button class="approve-btn" data-id="${application._id}">Approve</button>
                       <button class="remove-btn" data-id="${application._id}">Reject</button>
@@ -120,7 +118,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <td>${application.userId.username}</td>
                     <td>${application.gender}</td>
                     <td>${application.phone}</td>
-                    ${application.proofOfWork.map(file => `<a href="${file}" target="_blank">View</a>`).join(', ')}
+                    <td>${application.proofOfWork}</td>
                     <td>
                         <button class="remove-button" data-id="${application._id}" data-userid="${application.userId}">Remove</button>
                     </td>
@@ -346,7 +344,9 @@ async function fetchPendingAdvertisementRequests() {
                   <td>${request.providerId.username}</td>
                   <td>
                       <button onclick="approveRequest('${request._id}')">Approve</button>
+                      <button onclick="removeRequest('${request._id}')">Remove</button>
                   </td>
+
               `;
               tbody.appendChild(row);
           });
@@ -376,6 +376,28 @@ async function approveRequest(requestId) {
 console.error('Error approving request:', error);
       alert('Failed to approve request. Please try again later.');
   }
+}
+
+async function removeRequest(requestId) {
+    if (confirm('Are you sure you want to remove this advertisement request?')) {
+        try {
+            const response = await fetch(`/api/remove-advertisement/${requestId}`, {
+                method: 'DELETE',
+                credentials: 'include'
+            });
+
+            if (response.ok) {
+                alert('Advertisement request removed successfully!');
+                location.reload(); // Refresh the page to see the changes
+            } else {
+                const error = await response.json();
+                alert('Error removing advertisement request: ' + error.message);
+            }
+        } catch (error) {
+            console.error('Error removing advertisement request:', error);
+            alert('Failed to remove advertisement request. Please try again later.');
+        }
+    }
 }
 
 async function removeService(serviceId) {

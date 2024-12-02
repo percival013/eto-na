@@ -10,7 +10,6 @@ const cookieParser = require('cookie-parser')
 const cors = require('cors');
 const router = express.Router()
 const Message = require('./models/Message')
-const multer = require('multer')
 
 process.on('exit', function(code) {
     console.log(`About to exit with code: ${code}`);
@@ -26,7 +25,6 @@ app.use(cookieParser())
 app.use(express.static(__dirname))
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
-app.use('/uploads', express.static('uploads'))
 app.use(session({
     secret: 'BKjonpCFvhw1QnPe',
     resave: false,
@@ -72,25 +70,15 @@ const ApplicationSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref:'users', required: true },
     gender: { type: String, required: true },
     phone: { type: String, required: true },
-    proofOfWork: { type: [String], required: true },
+    proofOfWork: { type: String, required: true },
     credentials: { type: String, required: false },
     status: { type: String, default: 'pending' }
 });
 const Application = mongoose.model("Application", ApplicationSchema);
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/');
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname)); // Append timestamp to filename
-    }
-});
-
-const upload = multer({ storage });
-
 const AdvertisementRequestSchema = new mongoose.Schema({
     serviceName: { type: String, required: true },
+    serviceCategory: {type: String, required: true},
     serviceDescription: { type: String, required: true },
     averagePrice: { type: Number, required: true },
     address: { type: String, required: true },
@@ -107,10 +95,10 @@ AdvertisementRequestSchema.pre('save', function(next) {
     next();
 });
 const AdvertisementRequest = mongoose.model('AdvertisementRequest', AdvertisementRequestSchema);
-module.exports = AdvertisementRequest;
 
 const ServiceSchema = new mongoose.Schema({
     serviceName: { type: String, required: true },
+    serviceCategory:{ type: String, required: true},
     serviceDescription: { type: String, required: true },
     averagePrice: { type: Number, required: true },
     providerId: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
@@ -148,7 +136,6 @@ const BookingSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 });
 const Booking = mongoose.model('Booking', BookingSchema);
-module.exports = Booking;
 
 function isAuthenticated(req, res, next) {
     if (req.session.userId) {
@@ -322,15 +309,13 @@ app.get('/api/current-user', (req, res) => {
       });
   });
 
-app.get('/api/check-login', async (req, res) => {
-    const sessionId = req.cookies.sessionId; 
-
-    if (!sessionId) {
+  app.get('/api/check-login', async (req, res) => {
+    if (!req.session.userId) {
         return res.json({ success: false });
     }
 
     try {
-        const user = await Users.findById(req.session.userId);
+        const user = await Users.findById(req.session.userId); // Fetch user from the database
         if (!user) {
             return res.json({ success: false });
         }
@@ -399,24 +384,19 @@ app.post('/api/switch-to-customer', async (req, res) => {
     }
 });
 
-app.post('/api/apply-service-provider', isAuthenticated, upload.array('proofOfWork'), async (req, res) => {
-    const { gender, phone, credentials } = req.body;
+app.post('/api/apply-service-provider', isAuthenticated, async (req, res) => {
+    const { gender, phone, credentials, proofOfWork } = req.body; // proofOfWork is now text
 
-    // Access uploaded files
-    const proofOfWorkFiles = req.files;
-
-    // Check if files were uploaded
-    if (!proofOfWorkFiles || proofOfWorkFiles.length === 0) {
-        return res.status(400).send({ message: 'No files uploaded.' });
-    }
-
-    // Extract the file paths from the uploaded files
-    const proofOfWorkPaths = proofOfWorkFiles.map(file => file.path);
     const userId = req.session.userId;
 
-    // Check if userId is available
+    // Check if userId is available 
     if (!req.user || !req.user._id) {
         return res.status(401).send({ message: 'User  not authenticated.' });
+    }
+
+    // Validate input fields
+    if (!gender || !phone || !proofOfWork) {
+        return res.status(400).send({ message: 'All fields are required.' });
     }
 
     try {
@@ -425,14 +405,14 @@ app.post('/api/apply-service-provider', isAuthenticated, upload.array('proofOfWo
             gender,
             phone,
             credentials,
-            proofOfWork: proofOfWorkPaths
+            proofOfWork // This is now treated as text
         });
 
         await newApplication.save();
         res.status(201).send({ message: 'Application submitted successfully!' });
     } catch (error) {
         console.error('Error saving application:', error);
-        res.status(400).send({ message: 'Error saving application: ' + error.message });
+        res.status(500).send({ message: 'Error saving application: ' + error.message });
     }
 });
 
@@ -480,7 +460,7 @@ app.patch('/api/remove-access/:userId', async (req, res) => {
 });
 
 app.post('/api/advertise-service', async (req, res) => {
-    const { serviceName, serviceDescription, averagePrice } = req.body;
+    const { serviceName, serviceCategory, serviceDescription, averagePrice } = req.body;
 
     if (!req.session.userId) {
         return res.status(401).json({ message: 'Unauthorized' });
@@ -495,6 +475,7 @@ app.post('/api/advertise-service', async (req, res) => {
         // Create a new advertisement request instead of a service
         const newAdvertisementRequest = new AdvertisementRequest({
             serviceName,
+            serviceCategory,
             serviceDescription,
             averagePrice,
             providerId: req.session.userId,
@@ -510,6 +491,21 @@ app.post('/api/advertise-service', async (req, res) => {
     } catch (error) {
         console.error('Error saving advertisement request:', error);
         res.status(500).json({ message: 'Failed to submit advertisement request.' });
+    }
+});
+
+app.delete('/api/remove-advertisement/:id', async (req, res) => {
+    const requestId = req.params.id;
+
+    try {
+        const request = await AdvertisementRequest.findByIdAndDelete(requestId);
+        if (!request) {
+            return res.status(404).json({ message: 'Advertisement request not found.' });
+        }
+        res.status(200).json({ message: 'Advertisement request removed successfully.' });
+    } catch (error) {
+        console.error('Error removing advertisement request:', error);
+        res.status(500).json({ message: 'Failed to remove advertisement request.' });
     }
 });
 
@@ -570,6 +566,33 @@ app.delete('/api/remove-application/:id', async (req, res) => {
     } catch (error) {
         console.error('Error removing application:', error);
         res.status(500).json({ message: 'Failed to remove application.' });
+    }
+});
+
+app.patch('/api/update-account', isAuthenticated, async (req, res) => {
+    const { username, email, address, city, province } = req.body;
+
+    if (!username || !email || !address || !city || !province) {
+        return res.status(400).json({ message: 'All fields are required.' });
+    }
+
+    try {
+        const updatedUser  = await Users.findByIdAndUpdate(req.session.userId, {
+            username,
+            email,
+            address,
+            city,
+            province
+        }, { new: true }); // Return the updated document
+
+        if (!updatedUser ) {
+            return res.status(404).json({ message: 'User  not found.' });
+        }
+
+        res.status(200).json({ message: 'Account details updated successfully!' });
+    } catch (error) {
+        console.error('Error updating account details:', error);
+        res.status(500).json({ message: 'Failed to update account details.' });
     }
 });
 
@@ -658,6 +681,7 @@ app.patch('/api/remove-access/:userId', async (req, res) => {
         }
         const newService = new Service({
             serviceName: request.serviceName,
+            serviceCategory: request.serviceCategory,
             serviceDescription: request.serviceDescription,
             averagePrice: request.averagePrice,
             providerId: request.providerId,

@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Account - FixerFinder</title>
   <link rel="stylesheet" href="/css/profile.css">
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDNuuGLFl7JT2gwadDeusZx3JGF2DkLSWA&libraries=places&callback=initAutocomplete">
+    </script>
 </head>
 <body>
   <header>
@@ -23,24 +26,47 @@
       <p>Loading user information...</p>
     </section>
 
+    <section id="update-account">
+      <h2>Update Account Details</h2>
+      <form id="update-account-form">
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username" required>
+  
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required>
+  
+          <label for="address">Address:</label>
+          <input type="text" id="address" name="address" class="input" required>
+  
+          <label for="city">City:</label>
+          <input type="text" id="city" name="city" required>
+  
+          <label for="province">Province:</label>
+          <input type="text" id="province" name="province" required>
+  
+          <button type="submit">Update Details</button>
+      </form>
+      <p id="update-message"></p>
+  </section>
+
     <section id="provider-application">
       <h2>Apply to Become a Service Provider</h2>
       <form id="provider-application-form">          
           <label for="gender">Gender:</label>
-          <select id="gender" required>
+          <select id="gender" name="gender" required>
               <option value="" disabled selected>Select your gender</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
               <option value="Other">Other</option>
           </select>
           <label for="phone">Phone Number:</label>
-          <input type="tel" id="phone" required>
+          <input type="tel" id="phone" name="phone" required>
           
           <label for="proofOfWork">Proof of Work (Image/Video):</label>
-          <input type="file" id="proofOfWork" accept="image/*,video/*" required multiple>
+          <input type="text" id="proofOfWork" name="proofOfWork" required>
           
           <label for="credentials">Credentials (optional):</label>
-          <input type="text" id="credentials">
+          <input type="text" id="credentials" name="credentials">
           
           <button type="submit">Submit Application</button>
       </form>
@@ -94,23 +120,51 @@
     <section id="advertise-service" style="display: none;"> <!-- Hidden by default -->
       <h2>Advertise Your Service</h2>
       <form id="advertise-service-form">
-          <label for="serviceName">Service Category:</label>
-          <select id="serviceName" required>
-              <option value="" disabled selected>Select a service category</option>
-              <option value="Plumbing">Plumbing</option>
-              <option value="Electrical">Electrical</option>
-              <option value="Cleaning">Cleaning</option>
-              <option value="Landscaping">Landscaping</option>
-              <option value="Painting">Painting</option>
+
+          <label for= "serviceName">Service Name:</label>
+          <input type="text" id="serviceName" required>
+
+          <label for="serviceCategory">Service Category:</label>
+          <select id="serviceCategory" name="serviceCategory" required>
+            <option value="" disabled selected>Select a service category</option>
+            <option value="Plumbing">Plumbing</option>
+            <option value="Electrical">Electrical</option>
+            <option value="Locksmith">Locksmith</option>
+            <option value="Appliance Repair Technician">Appliance Repair Technician</option>
+            <option value="Mason">Mason</option>
+            <option value="Pressure Washer">Pressure Washer</option>
+            <option value="Roofer">Roofer</option>
+            <option value="Hairstylist">Hairstylist</option>
+            <option value="Manicure/Pedicure">Manicure/Pedicure</option>
+            <option value="Makeup Artist">Makeup Artist</option>
+            <option value="Housekeeper">Housekeeper</option>
+            <option value="Janitor">Janitor</option>
+            <option value="Window Cleaner">Window Cleaner</option>
+            <option value="Pool Cleaner">Pool Cleaner</option>
+            <option value="Upholsterer">Upholsterer</option>
+            <option value="Gardener">Gardener</option>
+            <option value="Lawn Care Technician">Lawn Care Technician</option>
+            <option value="Landscaper">Landscaper</option>
+            <option value="Irrigation Specialist">Irrigation Specialist</option>
+            <option value="Arborist">Arborist</option>
+            <option value="Mulching Service">Mulching Service</option>
+            <option value="Babysitter">Babysitter</option>
+            <option value="Elderly Caregiver">Elderly Caregiver</option>
+            <option value="Home Organiser">Home Organiser</option>
+            <option value="Home Cook">Home Cook</option>
           </select>
+
           <label for="serviceDescription">Service Description:</label>
           <textarea id="serviceDescription" required></textarea>
+          
           <label for="averagePrice">Average Price:</label>
           <input type="number" id="averagePrice" required>
+          
           <input type="hidden" id="city" required>
           <input type="hidden" id="province" required>
           <input type="hidden" id="latitude" required>
           <input type="hidden" id="longitude" required>
+          
           <button type="submit">Advertise Service</button>
       </form>
       <p id="message"></p>

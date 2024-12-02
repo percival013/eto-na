@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         await fetchUploadedServices(currentUserId); 
         await fetchBookingRequests(); 
         await checkUserRole();
-    
+        await initAutocomplete();
     } else {
         console.error('Invalid userId after fetching user info.');
     }
@@ -204,23 +204,23 @@ document.getElementById('provider-application-form').addEventListener('submit', 
 
     const gender = document.getElementById('gender').value;
     const phone = document.getElementById('phone').value;
-    const proofOfWorkFiles = document.getElementById('proofOfWork').files; // Get the uploaded files
+    const proofOfWork = document.getElementById('proofOfWork').value; // This should be text now
     const credentials = document.getElementById('credentials').value;
 
-    const applicationData = new FormData(); // Create a FormData object
-    applicationData.append('gender', gender);
-    applicationData.append('phone', phone);
-    applicationData.append('credentials', credentials);
-
-    // Append each file to FormData
-    for (let i = 0; i < proofOfWorkFiles.length; i++) {
-        applicationData.append('proofOfWork', proofOfWorkFiles[i]);
-    }
+    const applicationData = {
+        gender,
+        phone,
+        credentials,
+        proofOfWork
+    };
 
     try {
         const response = await fetch('/api/apply-service-provider', {
             method: 'POST',
-            body: applicationData,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(applicationData),
             credentials: 'include' 
         });
 
@@ -457,10 +457,51 @@ async function removeBooking(bookingId) {
     }
 }
 
+document.getElementById('update-account-form').addEventListener('submit', async function(event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
+    const address = document.getElementById('address').value;
+    const city = document.getElementById('city').value;
+    const province = document.getElementById('province').value;
+
+    const updatedDetails = {
+        username,
+        email,
+        address,
+        city,
+        province
+    };
+
+    try {
+        const response = await fetch('/api/update-account', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatedDetails),
+            credentials: 'include' // Include cookies for session management
+        });
+
+        const result = await response.json();
+        document.getElementById('update-message').textContent = result.message;
+
+        if (response.ok) {
+            // Optionally, you can reload user info or redirect
+            await fetchUserInfo(); // Fetch updated user info
+        }
+    } catch (error) {
+        console.error('Error updating account details:', error);
+        document.getElementById('update-message').textContent = 'An error occurred while updating your details. Please try again.';
+    }
+});
+
 document.getElementById('advertise-service-form').addEventListener('submit', async function(event) {
     event.preventDefault(); 
 
     const serviceName = document.getElementById('serviceName').value;
+    const serviceCategory = document.getElementById('serviceCategory').value;
     const serviceDescription = document.getElementById('serviceDescription').value;
     const averagePrice = document.getElementById('averagePrice').value;
 
@@ -474,6 +515,7 @@ document.getElementById('advertise-service-form').addEventListener('submit', asy
             },
             body: JSON.stringify({
                 serviceName,
+                serviceCategory,
                 serviceDescription,
                 averagePrice,
             }),
@@ -518,4 +560,36 @@ document.getElementById('logout-button').addEventListener('click', async functio
         alert('An error occurred while trying to logout. Please try again later.');
     }
 });
+
+function initAutocomplete() {
+    const addressInput = document.getElementById('address');
+    const autocomplete = new google.maps.places.Autocomplete(addressInput);
+  
+    autocomplete.addListener('place_changed', function() {
+        const place = autocomplete.getPlace();
+        if (!place.geometry) {
+            window.alert("No details found for input: '" + place.name + "'");
+            return;
+        }
+
+        // Optionally, populate city and province fields from place.address_components
+        populateCityAndProvince(place.address_components);
+    });
+}
+
+function populateCityAndProvince(addressComponents) {
+    let city = '';
+    let province = '';
+    addressComponents.forEach(component => {
+        if (component.types.includes('locality')) {
+            city = component.long_name; 
+        } else if (component.types.includes('administrative_area_level_1')) {
+            province = component.long_name; 
+        }
+    });
+
+    // Update the city and province input fields
+    document.getElementById('city').value = city;
+    document.getElementById('province').value = province;
+}
 

@@ -117,9 +117,6 @@ async function checkLoginStatus() {
     if (response.ok) {
         const data = await response.json();
         console.log('Login status data:', data);
-        if (data.success) {
-            document.getElementById('welcome-message').textContent = `Welcome! ${data.user.username}`;
-        }
     } else {
         console.error('Failed to check login status:', response.status);
     }
