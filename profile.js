@@ -37,17 +37,21 @@ async function fetchUserInfo() {
         if (userInfo.role === 'regular') {
             fetchBookedRequests(); 
             fetchBookingRequests();
+            document.getElementById('uploaded-services').style.display = 'none';
             document.getElementById('booked-requests').style.display = 'block'; 
             document.getElementById('booking-requests').style.display = 'none';
         } else {
+            document.getElementById('uploaded-services').style.display = 'block';
             document.getElementById('booked-requests').style.display = 'none';
             document.getElementById('booking-requests').style.display = 'block';
         }
 
         if (userInfo.role === 'provider') {
             fetchBookingRequests(); 
+            document.getElementById('uploaded-services').style.display = 'block';
             document.getElementById('booking-requests').style.display = 'block';
         } else {
+            document.getElementById('uploaded-services').style.display = 'none'
             document.getElementById('booking-requests').style.display = 'none'; 
         }
 
@@ -71,6 +75,7 @@ async function checkUserRole() {
         
         
         if (userInfo.role === 'provider') {
+            const uploadedServicesElement = document.getElementById('uploaded-services');
             const bookingRequestsElement = document.getElementById('booking-requests');
             const bookedRequestsElement = document.getElementById('booked-requests');
             
@@ -81,17 +86,27 @@ async function checkUserRole() {
             if (bookedRequestsElement) {
                 bookedRequestsElement.style.display = 'none';
             }
+
+            if(uploadedServicesElement) {
+                uploadedServicesElement.style.display = 'block'
+            }
+
             fetchBookingRequests();
         } else {
             const bookingRequestsElement = document.getElementById('booking-requests');
             const bookedRequestsElement = document.getElementById('booked-requests');
-            
+            const uploadedServicesElement = document.getElementById('uploaded-services');
+
             if (bookingRequestsElement) {
                 bookingRequestsElement.style.display = 'none';
             }
             
             if (bookedRequestsElement) {
                 bookedRequestsElement.style.display = 'block';
+            }
+             
+            if(uploadedServicesElement) {
+                uploadedServicesElement.style.display = 'none';
             }
         }
 
@@ -183,9 +198,11 @@ document.getElementById('switch-role-button').addEventListener('click', async fu
                 await fetchUserInfo();
                 
                 if (userInfo.role === 'provider') {
+                    document.getElementById('uploaded-services').style.display = 'block';
                     document.getElementById('booking-requests').style.display = 'none';
                     document.getElementById('booked-requests').style.display = 'block';
                 } else {
+                    document.getElementById('uploaded-services').style.display = 'none'
                     document.getElementById('booking-requests').style.display = 'block';
                     document.getElementById('booked-requests').style.display = 'none';
                 }

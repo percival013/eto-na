@@ -96,7 +96,7 @@ async function fetchServices() {
             card.innerHTML = `
                 <img src="Fixer.png" style="width: 100%; height: auto; border-radius: 20px; padding: 10px; background-color: white;">
                 <h3>${service.serviceName}</h3>
-                <h4>${service.serviceCategory}</h4>
+                <p4>${service.serviceCategory}</h4>
                 <p>Average Price: $${service.averagePrice}</p>
                 <p>Provider: ${service.providerId ? service.providerId.username : 'Unknown'}</p>
                 <p>Rating: ${service.averageRating ? service.averageRating.toFixed(1) + '★' : 'Not yet rated'}</p>
