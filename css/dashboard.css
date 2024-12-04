@@ -78,18 +78,18 @@ body {
   height: 100%;
   width: 250px;
   border-right: 2px solid #4b8150;
-  margin-left: -10px;
+  margin-left: -5px;
   padding-left: 1%;
   top: 0;
   
 }
 
 .service-category h2{
+  padding-left: 2%;
   font-size:20px;
   align-items: center;
   align-content: center;
   padding-left: 5px;
-
 }
 
 .service-category li{
@@ -178,6 +178,7 @@ font-size: 16px;
 
 .product-list {
   display: grid;
+  right: 20px;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 20px;
   padding: 35px;
@@ -189,11 +190,14 @@ font-size: 16px;
 }
 #product-list{
   display: flex;
-  align-items: center;
-  justify-content:center;
+  align-items: right;
+  justify-content:left;
   flex-wrap: wrap;
   flex-grow: 1;
   overflow: auto;
+  right: -50%;
+  padding-left: 120px;
+  padding-right: -350px;
 }
 
 
@@ -213,7 +217,7 @@ background-color: white;
 border: 1px solid #ddd;
 border-radius: 5px;
 padding: 30px;
-text-align: center;
+
 width: 18%;
 min-width: 250px;
 height: 400px;
@@ -236,12 +240,20 @@ background-color: #e6e6e6;
 
 .product-card h3 {
 font-size: 18px;
-margin: 10px 0;
+text-align: center;
 }
+
+.product-card h4 {
+  color: #555;
+  font-size: 11px;
+  padding-bottom: 20px;
+  text-align: center;
+  }
 
 .product-card p {
 font-size: 14px;
 color: #555;
+text-align: left;
 }
 
 .auth-buttons {

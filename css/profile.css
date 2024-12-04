@@ -1,22 +1,24 @@
 /* Profile Page Styles */
 
 body {
-  font-family: sans-serif;
+  font-family: 'Arial', sans-serif; 
   margin: 0;
-  background-color: #f4f4f4; /* Light gray background */
+  background-color: #f4f4f4; 
+  color: #333; 
 }
 
 header {
-  background-color: #232f3e; /* Dark background for header */
+  background-color: #007734; 
   color: white;
-  padding: 15px 20px;
+  padding: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 header h1 {
-  margin: 0;
+  margin : 0;
   font-size: 24px;
 }
 
@@ -35,77 +37,342 @@ nav a:hover {
   text-decoration: underline;
 }
 
-.main-content {
+main {
+  
   padding: 20px;
-  max-width: 800px; /* Adjust width as needed */
-  margin: 20px auto;
+  max-width: 90%; /* Adjusted width for the main content */
+  margin-top: -105px;
+  margin: 5px auto;
   background-color: white;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.profile-section {
-  margin-bottom: 20px;
-  padding: 20px;
+/* Styles for the product list */
+.product-list {
+  display: flex;
+  flex-wrap: wrap; /* Allow cards to wrap in case of overflow */
+  gap: 20px; /* Space between cards */
+  justify-content: center; /* Center the cards */
+}
+
+/* Styles for individual service cards */
+.service-card {
+  background-color: white; /* White background for the card */
+  border: 1px solid #ddd; /* Light border */
+  border-radius: 5px; /* Rounded corners */
+  padding: 20px; /* Padding inside the card */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  width: 250px; /* Fixed width for cards */
+  transition: transform 0.3s; /* Smooth scaling on hover */
+  text-align: center; /* Center text inside the card */
+}
+
+.service-card:hover {
+  transform: scale(1.05); /* Scale effect on hover */
+}
+
+/* Image styling */
+.service-image {
+  max-width: 100%; /* Responsive image */
+  border-radius: 20px; /* Rounded corners for the image */
+  padding: 10px; /* Padding around the image */
+  background-color: #e6e6e6; /* Background for the image placeholder */
+}
+
+/* Heading style */
+.service-card h3 {
+  font-size: 18px; /* Heading size */
+  margin: 10px 0; /* Space above and below the heading */
+}
+
+/* Description style */
+.service-card .service-description {
+  font-size: 14px; /* Font size for description */
+  margin-bottom: 10px; /* Space below description */
+}
+
+/* Average price style */
+.service-card .average-price {
+  font-size: 16px; /* Font size for price */
+  font-weight: bold; /* Bold price text */
+  margin-bottom: 15px; /* Space below price */
+}
+
+/* Button styling */
+.service-card button {
+  padding: 10px 15px; /* Button padding */
+  background-color: #007734; /* Button background color */
+  color: white; /* Button text color */
+  border: none; /* Remove border */
+  border-radius: 5px; /* Rounded corners for button */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s; /* Smooth background color transition */
+}
+
+.service-card button:hover {
+  background-color: #005a2e; /* Darker green on hover */
+}
+
+.profile-details, .update-account, .provider-application {
+  margin-bottom: 30px;
+  padding: 5px auto;
   border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: #fff;
+  border-radius: 8px;
+  background-color: #f9f9f9;
 }
 
-.profile-section h2 {
-  font-size: 20px;
-  margin-bottom: 10px;
+.profile-details h2, .update-account h2, .provider-application h2 {
+  font-size: 22px;
+  margin-bottom: 15px;
 }
 
 .profile-info {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 10px;
 }
 
 .profile-info label {
   font-weight: bold;
-  width: 120px; /* Adjust width as needed */
+  width: 150px; 
 }
 
-.profile-info span {
-  font-weight: normal;
+input[type="text"], input[type="email"], input[type="tel"], input[type="password"], select {
+  width: calc(100% - 40px); /* Shortened width */
+  padding: 10px;
+  padding-left: -5%;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
 button {
   padding: 10px 15px;
-  background-color: #007734; /* Green background */
+  background-color: #007734; 
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
+  transition: background-color 0.3s;
 }
 
 button:hover {
-  background-color: #005a2e; /* Darker green on hover */
+  background-color: #005a2e; 
 }
 
-.edit-button {
-  margin-left: 10px; /* Spacing between buttons */
+#logout-button {
+margin: 5px;
+  background-color: #d9534f; 
 }
 
-#uploaded-services {
+#logout-button:hover {
+  background-color: #c9302c; 
+}
+
+footer {
+  text-align: center;
+  padding: 10px;
+  background-color: #232f3e; 
+  color: white;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
+
+#advertise-service {
   margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9; /* Light background for the form */
 }
 
-.service-card {
-  border: 1px solid #ccc;
-  padding: 15px;
-  margin-bottom: 10px;
+#advertise-service h2 {
+  font-size: 22px;
+  margin-bottom: 15px;
+  color: #007734; /* Color for the header */
+}
+
+.form-group {
+  margin-bottom: 15px; /* Space between form fields */
+}
+
+.form-group label {
+  display: block; /* Block display for labels */
+  font-weight: bold; /* Bold text for labels */
+  margin-bottom: 5px; /* Space below labels */
+}
+
+input[type="text"], input[type="number"], select, textarea {
+  width: calc(100% - 20px); /* Full width with padding */
+  padding: 10px; /* Padding inside the fields */
+  border: 1px solid #ccc; /* Light border */
+  border-radius: 5px; /* Rounded corners */
+  font-size: 14px; /* Font size for inputs */
+}
+
+textarea {
+  height: 100px; /* Height for the description field */
+  resize: none; /* Disable resizing */
+}
+
+button {
+  padding: 10px 15px;
+  background-color: #007 734; 
+  color: white;
+  border: none;
   border-radius: 5px;
-  background-color: #f9f9f9;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
 }
 
-.service-card h3 {
-  margin: 0 0 10px;
+button:hover {
+  background-color: #005a2e; 
 }
 
-.service-card p {
-  margin: 5px 0;
+#message {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #d9534f; /* Red color for error messages */
+}
+
+/* Common styles for sections */
+.common-section {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9; /* Light background for the sections */
+}
+
+.common-section h2 {
+  font-size: 22px;
+  margin-bottom: 15px;
+  color: #007734; /* Color for the header */
+}
+
+.common-section label {
+  display: block; /* Block display for labels */
+  font-weight: bold; /* Bold text for labels */
+  margin-bottom: 5px; /* Space below labels */
+}
+
+.common-section input[type="text"],
+.common-section input[type="email"],
+.common-section input[type="tel"],
+.common-section input[type="number"],
+.common-section select,
+.common-section textarea {
+  width: calc(100% - 20px); /* Full width with padding */
+  padding: 10px; /* Padding inside the fields */
+  border: 1px solid #ccc; /* Light border */
+  border-radius: 5px; /* Rounded corners */
+  font-size: 14px; /* Font size for inputs */
+  margin-bottom: 15px; /* Space below inputs */
+}
+
+.common-section button {
+  padding: 10px 15px;
+  background-color: #007734; 
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.common-section button:hover {
+  background-color: #005a2e; 
+}
+
+.common-section #message,
+.common-section #update-message,
+.common-section #application-message {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #d9534f; /* Red color for error messages */
+}
+
+/* Table styles for booking requests */
+#booking-requests-table,
+#booked-requests-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+#booking-requests-table th,
+#booked-requests-table th,
+#booking-requests-table td,
+#booked-requests-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+#booking-requests-table th,
+#booked-requests-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+#booking-requests-table tr:nth-child(even),
+#booked-requests-table tr:nth-child(even) {
+  background-color: #f9f9f9; /* Zebra striping for tables */
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .common-section {
+    padding: 15px; /* Adjust padding for smaller screens */
+  }
+
+  .common-section input[type="text"],
+  .common-section input[type="email"],
+  .common-section input[type="tel"],
+  .common-section input[type="number"],
+  .common-section select,
+  .common-section textarea {
+    font-size: 12px; /* Smaller font size for mobile */
+  }
+}
+
+@media (max-width: 600px) {
+  #advertise-service {
+    padding: 15px; /* Adjust padding for smaller screens */
+  }
+
+  input[type="text"], input[type="number"], select, textarea {
+    font-size: 12px; /* Smaller font size for mobile */
+  }
+
+  header {
+    padding: 1rem 5%; 
+  }
+
+  .main {
+    padding: 10px; 
+  }
+
+  .profile-details, .update-account, .provider-application {
+    padding: 15px; 
+  }
+
+  button {
+    width: 100%; 
+  }
+
+  .profile-info {
+    flex-direction: column; 
+    align-items: flex-start; 
+  }
+
+  .profile-info label {
+    width: auto; 
+  }
 }

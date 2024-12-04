@@ -20,13 +20,16 @@
       <a href="chat.html">Chat</a>
     </nav>
   </header>
-  <main>
-    <section id="profile-details">
+  <main >
+
+    <section id="profile-details" class="common-section">
       <h2>Profile Information</h2>
       <p>Loading user information...</p>
     </section>
+      
 
-    <section id="update-account">
+
+    <section id="update-account" class="common-section">
       <h2>Update Account Details</h2>
       <form id="update-account-form">
           <label for="username">Username:</label>
@@ -58,7 +61,7 @@
       <p id="update-message"></p>
   </section>
 
-    <section id="provider-application">
+    <section id="provider-application" class="common-section">
       <h2>Apply to Become a Service Provider</h2>
       <form id="provider-application-form">          
           <label for="gender">Gender:</label>
@@ -71,7 +74,7 @@
           <label for="phone">Phone Number:</label>
           <input type="tel" id="phone" name="phone" required>
           
-          <label for="proofOfWork">Proof of Work (Image/Video):</label>
+          <label for="proofOfWork">Proof of Work:</label>
           <input type="text" id="proofOfWork" name="proofOfWork" required>
           
           <label for="credentials">Credentials (optional):</label>
@@ -82,17 +85,15 @@
       <p id="application-message"></p>
     </section>
 
-    <section id="role-switching">
-      <button id="switch-role-button" style="display: none;">Switch Role</button>
+    
+
+    <section id="uploaded-services" class="common-section" style="display: none;">
+      <h2>Uploaded Services</h2>
+      <div id="uploaded-services-list" class="product-list"></div>      
     </section>
 
-    <section id="uploaded-services" style="display: none;">
-      <h2>Your Uploaded Services</h2>
-      <div id="uploaded-services-list"></div>      
-    </section>
-
-    <section id="booking-requests" style="display: none;">
-      <h2>Your Booking Requests</h2>
+    <section id="booking-requests" class="common-section" style="display: none;">
+      <h2>Booking Requests</h2>
       <table id="booking-requests-table">
           <thead>
               <tr>
@@ -109,8 +110,8 @@
       </table>
   </section>
 
-    <section id="booked-requests" style="display: none;">
-      <h2>Your Booked Requests</h2>
+    <section id="booked-requests" class="common-section" style="display: none;">
+      <h2>Booked Requests</h2>
       <table id="booked-requests-table">
           <thead>
               <tr>
@@ -129,10 +130,12 @@
     <section id="advertise-service" style="display: none;"> <!-- Hidden by default -->
       <h2>Advertise Your Service</h2>
       <form id="advertise-service-form">
-
+        <div class="form-group">
           <label for= "serviceName">Service Name:</label>
           <input type="text" id="serviceName" required>
+        </div>
 
+        <div class="form-group">
           <label for="serviceCategory">Service Category:</label>
           <select id="serviceCategory" name="serviceCategory" required>
             <option value="" disabled selected>Select a service category</option>
@@ -162,13 +165,18 @@
             <option value="Home Organiser">Home Organiser</option>
             <option value="Home Cook">Home Cook</option>
           </select>
+        </div>
 
+        <div class="form-group">
           <label for="serviceDescription">Service Description:</label>
           <textarea id="serviceDescription" required></textarea>
-          
+        </div>  
+
+        <div class="form-group">
           <label for="averagePrice">Average Price:</label>
           <input type="number" id="averagePrice" required>
-          
+        </div>  
+
           <input type="hidden" id="city" required>
           <input type="hidden" id="province" required>
           <input type="hidden" id="latitude" required>
@@ -178,12 +186,34 @@
       </form>
       <p id="message"></p>
   </section>
-
+  <button id="logout-button">Logout</button>
   </main>
-  <button id="logout-button">Logout</button> 
-  <footer>
-    <p>&copy; 2023 FixerFinder. All rights reserved.</p>
-  </footer>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const logoutButton = document.getElementById('logout-button');
+    if (logoutButton) {
+        logoutButton.addEventListener('click', async () => {
+            try {
+                const response = await fetch('/logout', {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+
+                if (response.ok) {
+                    document.cookie = "sessionId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                    window.location.href = 'index.html';
+                } else {
+                    alert('Failed to logout. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error during logout:', error);
+                alert('An error occurred while trying to logout. Please try again later.');
+            }
+        });
+    }
+});
+  </script>
+
   <script src="profile.js"></script>
 </body>
 </html>

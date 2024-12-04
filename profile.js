@@ -137,6 +137,7 @@ function displayUserInfo(userInfo) {
     const timeElapsed = Math.floor((currentDate - joinedDate) / (1000 * 60 * 60 * 24));
 
     profileDetails.innerHTML = `
+        <h2>Profile Information</h2>
         <p><strong>Username:</strong> ${userInfo.username}</p>
         <p><strong>Email:</strong> ${userInfo.email || 'Not provided'}</p>
         <p><strong>Joined on:</strong> ${joinedDate.toLocaleDateString()}</p>
@@ -146,6 +147,10 @@ function displayUserInfo(userInfo) {
         <p><strong>Landmark:</strong> ${userInfo.address}</p>
         <p><strong>City/State:</strong> ${userInfo.city}</p>
         <p><strong>Provice:</strong> ${userInfo.province}</p>
+        <section id="role-switching">
+            <button id="switch-role-button" style="display: none;">Switch Role</button>
+        </section>
+       
     `;
 
     
@@ -576,7 +581,6 @@ document.getElementById('logout-button').addEventListener('click', async functio
         });
 
         if (response.ok) {
-            
             document.cookie = "sessionId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
             window.location.href = 'index.html'; 
         } else {

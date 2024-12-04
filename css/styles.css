@@ -120,7 +120,7 @@ section{
   margin-right: 27%;
   margin-left: 2%;
   padding-top: -10%;
- 
+  left:5%;
 }
 
 .home .home-contents h1{
@@ -156,6 +156,7 @@ margin-right: -7%;
     position: relative;
     width: 23vw;
     cursor: pointer;
+    left:30%;
     transition: 0.2s linear;
     border-radius: 30%;
 
@@ -269,7 +270,127 @@ body {
 
   }
 
+/* Existing styles remain unchanged */
 
+/* Responsive Design */
+@media (max-width: 995px) {
+  header {
+    padding: 1rem 5%; /* Reduce padding for mobile */
+  }
+
+  nav {
+    flex-direction: column; /* Stack navigation items vertically */
+    align-items: flex-start; /* Align items to the start */
+    width: 100%; /* Full width for mobile */
+  }
+
+  nav a {
+    margin: 1rem 0; /* Adjust margin for vertical spacing */
+    width: 100%; /* Full width for mobile links */
+    text-align: center; /* Center text */
+    font-size: 1.2rem; /* Adjust font size for mobile */
+  }
+
+  .home {
+    padding: 2rem 5%; /* Reduce padding for mobile */
+    margin-left: 0; /* Reset left margin */
+    margin-right: 0; /* Reset right margin */
+    gap: 2rem; /* Adjust gap for mobile */
+  }
+
+  .home .home-contents {
+    margin-right: 0; /* Reset margin for mobile */
+    margin-left: 0; /* Reset margin for mobile */
+  }
+
+  .home .home-contents h1 {
+    font-size: 4rem; /* Adjust heading size for mobile */
+    margin-right: 0; /* Reset right margin */
+  }
+
+  .home .home-contents p {
+    font-size: 0.9rem; /* Adjust paragraph size for mobile */
+    margin-right: 0; /* Reset right margin */
+  }
+
+  .logo {
+    margin-right: 0; /* Reset right margin for mobile */
+  }
+
+  .logo img {
+    width: 80vw; /* Adjust logo size for mobile */
+    max-width: 100%; /* Ensure it fits within container */
+  }
+
+  .auth-buttons {
+    margin-left: 0; /* Reset left margin for mobile */
+    margin-right: 0; /* Reset right margin for mobile */
+    padding: 1% 5%; /* Adjust padding for mobile */
+  }
+
+  .auth-buttons h1 {
+    font-size: 1.5rem; /* Adjust button heading size for mobile */
+  }
+
+  .auth-buttons input {
+    width: 90%; /* Increase input width for mobile */
+  }
+
+  button {
+    width: 90%; /* Increase button width for mobile */
+  }
+}
+
+/* Additional media query for very small devices (optional) */
+@media (max-width: 480px) {
+  .home .home-contents h1 {
+    font-size: 3rem; /* Further adjust heading size for very small screens */
+  }
+
+  .home .home-contents p {
+    font-size: 0.8rem; /* Further adjust paragraph size for very small screens */
+  }
+}
+
+/* Existing styles remain unchanged */
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  /* Hide all elements except the login form */
+  .home, 
+  .home-contents,
+  .logo {
+      display: none; /* Hide all other sections */
+  }
+
+  .auth-buttons {
+      display: flex; /* Show the login form */
+      flex-direction: column;
+      align-items: center; /* Center the login form */
+      margin: 0 auto; /* Center the form horizontally */
+      padding: 20px; /* Add some padding */
+      width: 100%; /* Full width */
+  }
+
+  .auth-buttons h1 {
+      font-size: 1.8em; /* Adjust heading size */
+      margin-bottom: 20px; /* Space below the heading */
+  }
+
+  .auth-buttons input {
+      width: 90%; /* Increase input width for mobile */
+      margin-bottom: 15px; /* Space below inputs */
+  }
+
+  .auth-buttons button {
+      width: 90%; /* Increase button width for mobile */
+  }
+
+  /* Additional styling for links */
+  .auth-buttons p {
+      font-size: 0.9em; /* Adjust link size */
+  }
+}
 
 
 

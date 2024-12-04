@@ -9,7 +9,7 @@ body {
   }
   
   header {
-    background-color: #232f3e;
+    background: linear-gradient(to right, #4b8150,#36853d); 
     color: white;
     padding: 15px 20px;
     display: flex;
@@ -38,9 +38,9 @@ body {
   }
   
   main {
-    padding: 20px;
+    padding: auto;
     max-width: 800px;
-    margin: 20px auto;
+    margin: auto;
     background-color: white;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
