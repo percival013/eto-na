@@ -184,12 +184,6 @@ async function bookService() {
         }
 
         const userInfo = await userResponse.json();
-        
-        
-        if (userInfo.role === 'provider' && service.providerId.equals(userInfo._id)) {
-            alert('You cannot book your own service.');
-            return;
-        }
 
         
         const bookingRequest = {
